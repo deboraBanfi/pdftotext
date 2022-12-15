@@ -1,0 +1,153 @@
+<article>
+<preambule>
+ Conversational_Networks_for_Automatic_Online_Moderation.pdf
+</preambule>
+<title>
+38
+ 
+ </title>
+<abstract>
+community is a challenge that has great socio-economic ramifications. However, the costs incurred by delegating this paper
+to human agents are high. For this reason, an automatic
+system able to detect abuse in user-generated content is of
+great interest. There are a number of ways to tackle this
+problem, but the most commonly seen in practice are word
+filtering or regular expression matching. The main limitations
+are their vulnerability to intentional obfuscation on the part of
+the users, and their context-insensitive nature. Moreover, they
+are language dependent and may require appropriate corpora
+for training. In this paper, we propose a system for automatic
+abuse detection that completely disregards message content.
+We first extract a conversational network from raw chat logs
+and characterize it through topological measures. We then use
+these as features to train a classifier on our abuse detection task.
+We thoroughly assess our system on a dataset of user comments
+originating from a French massively multiplayer online game.
+We identify the most appropriate network extraction parameters
+and discuss the discriminative power of our features, relatively
+to their topological and temporal nature. Our method reaches an
+F-measure of 83.89 when using the full feature set, improving on
+existing approaches. With a selection of the most discriminative
+features, we dramatically cut computing time while retaining the
+most of the performance (82.65).
+Index Terms— Classification algorithms, Information retrieval,
+Network theory (graphs), Social computing, Text analysis.
+
+I. I NTRODUCTION
+</abstract>
+<intro>
+
+O
+
+NLINE communities have acquired an indisputable
+importance in today’s society. From modest beginnings
+as places to trade ideas around specific topics, they have grown
+into important focuses of attention for companies to advertize products or governments interested in monitoring public
+discourse. They also have a strong social effect, by heavily
+impacting public and interpersonal communications.
+However, the Internet grants a degree of anonymity, and
+because of that, online communities are often confronted
+with users exhibiting abusive behaviors. The notion of abuse
+varies depending on the community, but there is almost
+always a common core of rules stating that users should
+not personally attack others or discriminate them based on
+race, religion, or sexual orientation. It can also include more
+Manuscript received April 16, 2018; revised September 25, 2018; accepted
+December 6, 2018. Date of publication January 29, 2019; date of current
+version February 12, 2019. This work was supported in part by ProvenceAlpes-Côte-d’Azur region, France and in part by Nectar de Code Company.
+(Corresponding author: Etienne Papegnies.)
+E. Papegnies is with the Laboratoire Informatique d’Avignon, Avignon
+University, 84911 Avignon, France, and also with Nectar de Code, 13570
+Barbentane, France (e-mail: etienne.papegnies@univ-avignon.fr).
+V. Labatut, R. Dufour, and G. Linares are with the Laboratoire Informatique
+d’Avignon, Avignon University, 84911 Avignon, France.
+Digital Object Identifier 10.1109/TCSS.2018.2887240
+
+community-specific aspects, e.g., not posting advertisement
+or external URLs. For community maintainers, it is often
+necessary to act on abusive behaviors: if they do not, abusive
+users can poison the community, make important community members leave, and, in some countries, trigger legal
+issues [1], [2].
+When users break the community rules, sanctions can then
+be applied. This process, called moderation, is mainly done
+by humans. Since this manual work is expensive, companies
+have a vested interest in automating the process. In this
+paper, we consider the classification problem consisting in
+automatically determining if a user message is abusive or not.
+This task is at the core of automated moderation, and it is
+difficult for several reasons. First, the amount of noise in the
+content (typos, grammatical errors, uncommon abbreviations,
+out-of-vocabulary words...) of messages posted on the Internet
+is usually quite high. Furthermore, while some of this noise is
+unwittingly produced by fast typing or poor language skills, a
+good part of it is voluntarily introduced as a means to defeat
+automated badword checks, e.g. “Pls d1e you f8 ck”. Then,
+even with a noiseless message, it is sometimes necessary to
+perform advanced natural language analysis to detect abuse in
+a message. Here is a fictional example of a message containing
+no obvious indicators of abuse such as straight insults, while
+still being very abusive indeed: “Would you like to meet your
+maker? I can arrange that”. Finally, even advanced natural
+language processing approaches may not be able to detect
+abuse from a message only without looking at its context. This
+context can take various forms. For instance, in the case of a
+“Yo mama joke”, it is the continuation of the conversation. But
+it can also include external knowledge, which makes it harder
+to handle. Consider the following exchange, for example: A:
+“They’ve been discriminated against enough. Six millions of
+them were killed during the holocaust.” – B: “That didn’t
+actually happen”. The message from B has no abuse markers
+at all until one considers both the messages that came before
+and historical knowledge.
+To address these issues, we propose, as our main contribution in this paper, an approach that completely ignores
+the content of the messages and models conversations under
+the form of conversational graphs. By doing so, we aim to
+create a model that is not vulnerable to text-based obfuscation.
+We characterize these graphs through a number of topological
+measures which are then used as features, in order to train and
+test a classifier. Our second contribution is to apply our method
+to a corpus of chat logs originating from the community of
+the French massively multiplayer online game SpaceOrigin.1
+1 https://play.spaceorigin.fr/
+
+2329-924X © 2019 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See http://www.ieee.org/publications_standards/publications/rights/index.html for more information.
+
+PAPEGNIES et al.: CONVERSATIONAL NETWORKS FOR AUTOMATIC ONLINE MODERATION
+
+Our third contribution is to investigate the relative importance
+of the classification features, as well as the parameters of
+the graph extraction process, with regard to our classification
+task—the detection of abusive messages.
+This paper is a significantly extended version of our preliminary work started in [3]. In comparison, we propose and experiment with several variations of our network extraction method
+and vastly expand the array of features that we consider.
+We also adapt our approach to greatly increase the efficiency of
+our system with regard to necessary computational resources
+and make it more versatile to possible use cases.
+The rest of this paper is organized as follows. In Section II,
+we review related work on abuse detection and previous
+approaches dedicated to network extraction from various types
+of conversation logs. We describe the methods used throughout
+our pipeline in Section III, including the approach proposed
+to extract conversational networks, and the topological features that we compute to characterize them. In Section IV,
+we present our dataset, as well as the overall experimental
+setup for the classification task. We then provide a discussion
+and a qualitative study of the performance of our approach,
+with a focus on the contributions of the considered features.
+Because some of them are computed from information that
+is not yet available at the instant some messages are posted,
+we also examine the performances of the system-based only
+on information available at the time (i.e., as a prediction task).
+Finally, we summarize our contributions in Section V and
+present some perspectives for this paper.
+II. R ELATED W ORK
+</intro>
+<corps>
+<</corps>
+<conclusion>
+</conclusion>
+<discussion>
+</discussion>
+<Bibliographie>
+</Bibliographie>
+</article>
